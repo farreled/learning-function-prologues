@@ -1,8 +1,8 @@
 #importing our libraries
-from sklearn.linear_model import LogisticRegression
+import textdistance
+import random
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import os
 
 #create a list of all our binaries from symbull
@@ -34,12 +34,13 @@ for file in file_list:
             functionPrologue = bytearray()
             functionPrologue+=file.read(30) #put 30 bytes of the file into an array of bytes
             functionPrologue = bytes(functionPrologue)
-            functionPrologue = str(functionPrologue)
+            #functionPrologue = str(functionPrologue)
+            functionPrologue = functionPrologue.decode("latin-1")
             functionPrologue = functionPrologue[2:-1] #bytearray prepends b' and appends ' so lets remove that
     
             #add our function name and prologue to a dataframe. we will feed this to our model for training
             #this dataframe is a 2D object. think of it as a spreadsheet or a SQL table
-            df = pd.DataFrame(np.array([[ID, functionName, functionPrologue]]), columns=['ID', 'Function Name', 'Function Prologue'])
+            df = pd.DataFrame(np.array([[ID, functionName, functionPrologue]]), columns=['ID', 'Function_Name', 'Function_Prologue'])
             df_list.append(df) #add current dataframe to a list that we will compile into a big dataframe later
             ID = ID + 1
             
@@ -48,4 +49,14 @@ for file in file_list:
 #merge our list of dataframes
 df = pd.concat(df_list, axis = 0)
 
-#training goes here
+X = df["Function_Prologue"]
+
+#we can use different algorithms to determine how similar an input is to our known prologues
+avg_similarity = 0
+input_code = "UH\x89\xe5H\x83\xec H\x89}\xe8H\x89u\xe0H\x8bE\xe0H\x83\xc0\x01H\x89\xc7\xe8\x91\xfa"
+for prologue in X:
+    similarity_score = textdistance.ratcliff_obershelp(input_code, prologue)
+    avg_similarity = avg_similarity + similarity_score
+    
+avg_similarity = avg_similarity / len(X)
+print("The probability that the input is a prologue is : ", round(avg_similarity, 2))
