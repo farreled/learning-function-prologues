@@ -1,6 +1,5 @@
 #importing our libraries
 import textdistance
-import random
 import pandas as pd
 import numpy as np
 import os
@@ -49,14 +48,16 @@ for file in file_list:
 #merge our list of dataframes
 df = pd.concat(df_list, axis = 0)
 
+#select only the function prologues into one series
 X = df["Function_Prologue"]
 
 #we can use different algorithms to determine how similar an input is to our known prologues
-avg_similarity = 0
+#since we have so many varying prologues, getting the highest one is probably the best method
+max_similarity = 0
 input_code = "UH\x89\xe5H\x83\xec H\x89}\xe8H\x89u\xe0H\x8bE\xe0H\x83\xc0\x01H\x89\xc7\xe8\x91\xfa"
 for prologue in X:
     similarity_score = textdistance.ratcliff_obershelp(input_code, prologue)
-    avg_similarity = avg_similarity + similarity_score
+    if similarity_score > max_similarity:
+        max_similarity = similarity_score
     
-avg_similarity = avg_similarity / len(X)
-print("The probability that the input is a prologue is : ", round(avg_similarity, 2))
+print("The probability that the input is a prologue is: {0}%".format(round(max_similarity, 2) * 100))
