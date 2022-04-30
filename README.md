@@ -27,4 +27,4 @@ Output generated will show a probability that the input is a prologue or not.
 
 
 
-By: Ned Farrell and Meg Jones
+*By: Ned Farrell and Meg Jones*
