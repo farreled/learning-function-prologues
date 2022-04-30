@@ -24,3 +24,7 @@ Output generated will show a probability that the input is a prologue or not.
 ### Methodology
 
 [RatCliff Obsershelp](https://en.wikipedia.org/wiki/Gestalt_Pattern_Matching) pattern matching is used to determine if the input is similar to any given prologue. Once given an input, it will loop through all of the ingested prologues and check their similarity, keeping the highest similarity score, which is used to determine whether the input is a prologue.
+
+
+
+By: Ned Farrell and Meg Jones
